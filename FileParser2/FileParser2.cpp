@@ -89,11 +89,14 @@ std::map<std::string, int> tokenizeContent(const std::string& content) {
                 word += ch;
             }
         }
-        else if (ch == '\'' && isInsideWord && isalnum(word.back())) {
-            // Include apostrophes only if they are within a word and not at the end
+        else if (ch == '\'' && isInsideWord) {
+            // Include apostrophes within a word but not at the end
             size_t nextNonSpace = findNextNonSpace(content, i + 1);
-            if (!word.empty() && nextNonSpace != std::string::npos && nextNonSpace > i + 1) {
-                word += ch;
+            if (!word.empty() && nextNonSpace != std::string::npos && nextNonSpace > i + 1 && nextNonSpace < content.size() && isalnum(content[nextNonSpace])) {
+                // Exclude the apostrophe from the word
+                tokenCount[word]++;
+                word.clear(); // Clear the word for the next one
+                isInsideWord = false;
             }
         }
         else if (isInsideWord) {
