@@ -67,9 +67,25 @@ size_t findNextNonSpace(const std::string& content, size_t start) {
     return std::string::npos;
 }
 
+// Function to count vowels in a word
+int countVowels(const std::string& word) {
+    const std::string vowels = "aeiouAEIOU";
+    int count = 0;
+
+    for (char ch : word) {
+        if (vowels.find(ch) != std::string::npos) {
+            // Found a vowel
+            count++;
+        }
+    }
+
+    return count;
+}
+
 /// Function to tokenize the content
 std::map<std::string, int> tokenizeContent(const std::string& content) {
     std::map<std::string, int> tokenCount;
+    std::map<std::string, int> vowelCount;
 
     std::string word;
     bool isInsideWord = false;
@@ -102,6 +118,7 @@ std::map<std::string, int> tokenizeContent(const std::string& content) {
         else if (isInsideWord) {
             // Non-alphanumeric character encountered, consider it as the end of a word
             tokenCount[word]++;
+            vowelCount[word] += countVowels(word);
             word.clear(); // Clear the word for the next one
             isInsideWord = false;
         }
@@ -111,6 +128,7 @@ std::map<std::string, int> tokenizeContent(const std::string& content) {
     // Check for the last word in the content
     if (!word.empty()) {
         tokenCount[word]++;
+        vowelCount[word] += countVowels(word);
     }
 
     return tokenCount;
@@ -155,22 +173,29 @@ std::pair<std::string, int> findTokenWithMostRepeatedCharacters(const std::vecto
 }
 
 // Function to print token occurrences
-void printTokenOccurrences(const std::map<std::string, int>& tokenCount) {
+void printTokenOccurrences(const std::map<std::string, int>& tokenCount, const std::map<std::string, int>& vowelCount) {
     std::cout << "\nToken Occurences" << std::endl;
     std::cout << std::left << std::setw(20) << "Token" << std::setw(10) << "Occurrences" << std::endl;
     std::cout << std::string(30, '-') << std::endl;
 
     for (const auto& mappedTokens : tokenCount) {
-        std::cout << std::setw(20) << mappedTokens.first << std::setw(10) << mappedTokens.second << std::endl;
+        const std::string& token = mappedTokens.first;
+        int occurrences = mappedTokens.second;
+        int vowels = vowelCount.at(token);
+        std::cout << std::left << std::setw(20) << token << std::setw(15) << occurrences << std::setw(15) << vowels << std::endl;
     }
 }
 
 // Function to print sorted tokens
-void printSortedTokens(const std::vector<std::pair<std::string, int>>& sortedTokens) {
+void printSortedTokens(const std::vector<std::pair<std::string, int>>& sortedTokens, const std::map<std::string, int>& vowelCount) {
     std::cout << "\nSorted tokens by occurrence:" << std::endl;
     std::cout << std::string(30, '-') << std::endl;
     for (const auto& mappedTokens : sortedTokens) {
-        std::cout << std::left << std::setw(20) << mappedTokens.first << std::setw(10) << mappedTokens.second << std::endl;
+        const std::string& token = mappedTokens.first;
+        int occurrences = mappedTokens.second;
+        int vowels = vowelCount.at(token);
+
+        std::cout << std::left << std::setw(20) << token << std::setw(15) << occurrences << std::setw(15) << vowels << std::endl;
     }
 }
 
@@ -206,14 +231,22 @@ void processFile(const std::string& filename) {
     if (content.empty()) {
         return;
     }
+    
+    std::transform(content.begin(), content.end(), content.begin(), [](unsigned char c) {
+        return std::tolower(c);
+        });
 
     std::map<std::string, int> tokenCount = tokenizeContent(content);
+    std::map<std::string, int> vowelCount;
+    for (const auto& entry : tokenCount) {
+        vowelCount[entry.first] = countVowels(entry.first);
+    }
 
-    printTokenOccurrences(tokenCount);
+    printTokenOccurrences(tokenCount, vowelCount);
 
     std::vector<std::pair<std::string, int>> sortedTokens = sortTokensByOccurrence(tokenCount);
 
-    printSortedTokens(sortedTokens);
+    printSortedTokens(sortedTokens, vowelCount);
 
     printTopTokensBasedOnFile(sortedTokens);
 
