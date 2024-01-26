@@ -175,8 +175,8 @@ std::pair<std::string, int> findTokenWithMostRepeatedCharacters(const std::vecto
 // Function to print token occurrences
 void printTokenOccurrences(const std::map<std::string, int>& tokenCount, const std::map<std::string, int>& vowelCount) {
     std::cout << "\nToken Occurences" << std::endl;
-    std::cout << std::left << std::setw(20) << "Token" << std::setw(10) << "Occurrences" << std::endl;
-    std::cout << std::string(30, '-') << std::endl;
+    std::cout << std::left << std::setw(20) << "Token" << std::setw(15) << "Occurrences" << std::setw(15) << "Vowels" << std::endl;
+    std::cout << std::string(50, '-') << std::endl;
 
     for (const auto& mappedTokens : tokenCount) {
         const std::string& token = mappedTokens.first;
@@ -189,7 +189,8 @@ void printTokenOccurrences(const std::map<std::string, int>& tokenCount, const s
 // Function to print sorted tokens
 void printSortedTokens(const std::vector<std::pair<std::string, int>>& sortedTokens, const std::map<std::string, int>& vowelCount) {
     std::cout << "\nSorted tokens by occurrence:" << std::endl;
-    std::cout << std::string(30, '-') << std::endl;
+    std::cout << std::left << std::setw(20) << "Token" << std::setw(15) << "Occurrences" << std::setw(15) << "Vowels" << std::endl;
+    std::cout << std::string(50, '-') << std::endl;
     for (const auto& mappedTokens : sortedTokens) {
         const std::string& token = mappedTokens.first;
         int occurrences = mappedTokens.second;
@@ -209,7 +210,7 @@ void printTopTokens(const std::vector<std::pair<std::string, int>>& sortedTokens
         });
 
     std::cout << "\nTop " <<numTokens<< " tokens with the most characters : " << std::endl;
-    std::cout << std::string(30, '-') << std::endl;
+    std::cout << std::string(50, '-') << std::endl;
     for (const auto& token : topTokens) {
         std::cout << std::left << std::setw(20) << token.first << std::setw(10) << token.first.length() << " characters" << std::endl;
     }
